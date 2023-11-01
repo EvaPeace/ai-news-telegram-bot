@@ -1,3 +1,5 @@
+import config
+
 import logging
 
 import openai
@@ -32,8 +34,8 @@ def get_post_from_ChatGPT(news_headlines: list[str]) -> str:
     log_dict = {
         "input_data": news_headlines,
         "user_message": user_message,
-        "output_data": chatgpt_answer,
         "chatgpt_answer": chat_completion,
+        "output_data": chatgpt_answer,
     }
 
     logger2.info('get_post_from_ChatGPT' + str(log_dict))
