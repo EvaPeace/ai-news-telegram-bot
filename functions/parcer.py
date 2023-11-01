@@ -15,4 +15,4 @@ def parse_rss(url='https://motor.ru/exports/rss'):
     for item in feed.entries:
         Titles_list.append(item.title)
     Three_First_News = Titles_list[0:3:1]
-    print(Three_First_News)
+    return Three_First_News
