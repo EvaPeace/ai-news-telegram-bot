@@ -1,0 +1,1 @@
+from functions.OpenAI_API import get_post_from_ChatGPT
