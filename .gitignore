@@ -1,3 +1,4 @@
 /.vscode/
 /.idea/
-test.ipynb
+test.py
+main_log.log
