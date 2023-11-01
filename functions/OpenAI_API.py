@@ -21,18 +21,21 @@ def get_post_from_ChatGPT(news_headlines: list[str]) -> str:
     user_message = user_message + '\n'.join(news_headlines)
     message = {"role": "user", "content": user_message}
 
-    chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[message])
+    # chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=[message])
+    #
+    # chatgpt_answer = chat_completion["choices"][0]["message"]["content"]
 
-    chatgpt_answer = chat_completion["choices"][0]["message"]["content"]
+    chat_completion = 'nothing'
 
-    logger2.info(f'\nget_post_from_ChatGPT[\n'
-                 f'    "input_data": {news_headlines},\n'
-                 f'    "output_data": {chatgpt_answer}\n'
-                 f']')
+    chatgpt_answer = 'nothing'
 
-    logger2.info(f'\nget_post_from_ChatGPT[\n'
-                 f'    "user_message": "{user_message}",\n'
-                 f'    "chatgpt_answer": {chat_completion}\n'
-                 f']')
+    log_dict = {
+        "input_data": news_headlines,
+        "user_message": user_message,
+        "output_data": chatgpt_answer,
+        "chatgpt_answer": chat_completion,
+    }
+
+    logger2.info('get_post_from_ChatGPT' + str(log_dict))
 
     return chatgpt_answer
