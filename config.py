@@ -21,6 +21,5 @@ openai.api_base = os.getenv('openai_api_base')
 
 storage = MemoryStorage()
 
-# bot = Bot(token=os.getenv('BOT_TOKEN'))
-bot = Bot(token='6656423860:AAFp5RZlP6dh8Vh1Lg5Tz_0BkheyxlHkmC4')
+bot = Bot(token=os.getenv('BOT_TOKEN'))
 dp = Dispatcher(bot, storage=storage)
