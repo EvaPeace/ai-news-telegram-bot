@@ -7,15 +7,15 @@ import openai
 logger2 = logging.getLogger(__name__)
 
 
-def get_post_from_ChatGPT(news_headlines: list[str]) -> str:
+def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
     """
     Генерирует новостной пост на основе заданных заголовков новостей, обращаясь к ChatGPT через OpenAI API.
     В случае ошибки возвращает None
 
     :param news_headlines: Список заголовков новостей.
     :type news_headlines: list[str]
-    :return: Новостной пост сгенерированный ChatGPT.
-    :rtype: str
+    :return: Новостной пост сгенерированный ChatGPT (str) или None в случе ошибки
+    :rtype: str | None
     """
     try:
         user_message = 'Привет, напиши провокационные, но короткие новостные статьи, примерно 100 слов, ' \
