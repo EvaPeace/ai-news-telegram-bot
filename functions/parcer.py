@@ -1,7 +1,7 @@
 import feedparser
 
 
-def get_news_headlines(n_news=3, url='https://motor.ru/exports/rss') -> list[str]:
+def get_news_headlines(n_news=3, url='https://motor.ru/exports/rss') -> list[str] | None:
     """
     Получает список заголовков новостей и возвращает его как список строк (str).
 
@@ -9,8 +9,8 @@ def get_news_headlines(n_news=3, url='https://motor.ru/exports/rss') -> list[str
     :type url: str
     :param n_news: Количество новостей для получения.
     :type n_news: int
-    :return: Список заголовков новостей в виде списка строк (str).
-    :rtype: list[str]
+    :return: Список заголовков новостей в виде списка строк (str) или None в случае ошибки
+    :rtype: list[str] | None
     """
 
     # Создаем объект feedparser для работы с RSS лентой
@@ -22,8 +22,11 @@ def get_news_headlines(n_news=3, url='https://motor.ru/exports/rss') -> list[str
         return
 
     # Если загрузка RSS ленты прошла успешно, выводим заголовок
-    Titles_list = []
+    titles_list = []
+
     for item in feed.entries:
-        Titles_list.append(item.title)
-    Three_First_News = Titles_list[0:3:1]
-    return Three_First_News
+        titles_list.append(item.title)
+
+    three_first_news = titles_list[0:3:1]
+
+    return three_first_news
