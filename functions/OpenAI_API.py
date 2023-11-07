@@ -50,30 +50,6 @@ def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
     except TypeError as e:
         logger2.error(f"get_post_from_ChatGPT - Incorrect input data type in news_headlines: {e}")
 
-    except openai.error.Timeout as e:
+    except openai.error.OpenAIError as e:
         # Handle timeout error, e.g. retry or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request timed out: {e}")
-
-    except openai.error.APIError as e:
-        # Handle API error, e.g. retry or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API returned an API Error: {e}")
-
-    except openai.error.APIConnectionError as e:
-        # Handle connection error, e.g. check network or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request failed to connect: {e}")
-
-    except openai.error.InvalidRequestError as e:
-        # Handle invalid request error, e.g. validate parameters or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request was invalid: {e}")
-
-    except openai.error.AuthenticationError as e:
-        # Handle authentication error, e.g. check credentials or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request was not authorized: {e}")
-
-    except openai.error.PermissionError as e:
-        # Handle permission error, e.g. check scope or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request was not permitted: {e}")
-
-    except openai.error.RateLimitError as e:
-        # Handle rate limit error, e.g. wait or log
-        logger2.error(f"get_post_from_ChatGPT - OpenAI API request exceeded rate limit: {e}")
+        logger2.error(f"get_post_from_ChatGPT - OpenAI API: {e}")
