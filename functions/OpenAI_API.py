@@ -1,8 +1,15 @@
-import config
-
 import logging
 
 import openai
+
+# настройка базового логгера
+logging.basicConfig(
+    level=logging.INFO,  # Уровень логирования (может быть DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    format="%(name)s %(asctime)s %(levelname)s %(message)s",
+    filename='main_log.log',  # Имя файла, куда будут записываться логи
+    filemode='a+',  # Режим записи (a - добавление, w - перезапись)
+    encoding='utf-8'
+)
 
 logger2 = logging.getLogger(__name__)
 
