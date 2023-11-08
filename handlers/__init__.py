@@ -1,1 +1,2 @@
 from handlers.client import register_handlers_client
+from handlers.channel import register_handlers_channel
