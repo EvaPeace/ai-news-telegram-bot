@@ -17,7 +17,7 @@ async def write_news():
 
     await bot.send_message(
         chat_id=channel_id,
-        text='Новости за сегодня:\n' + news_post
+        text='Новости за сегодня:\n\n' + news_post
     )
 
 
