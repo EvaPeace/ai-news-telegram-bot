@@ -27,12 +27,12 @@ def register_handlers_channel(dp: Dispatcher):
 
 
 def start_schedule():
-    scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
+    scheduler = AsyncIOScheduler()
 
-    trigger1 = CronTrigger(hour=7, minute=00, second=0)
+    trigger1 = CronTrigger(timezone='Europe/Moscow', hour=7, minute=00, second=0)
     scheduler.add_job(write_news, trigger=trigger1)
 
-    trigger2 = CronTrigger(hour=18, minute=00, second=0)
+    trigger2 = CronTrigger(timezone='Europe/Moscow', hour=18, minute=00, second=0)
     scheduler.add_job(write_news, trigger=trigger2)
 
     scheduler.start()
