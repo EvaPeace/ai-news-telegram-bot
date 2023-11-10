@@ -12,6 +12,8 @@ openai.api_base = os.getenv('openai_api_base')
 
 channel_id = os.getenv('channel_id')
 
+admins_ids = (os.getenv('admin1_id'), os.getenv('admin2_id'))
+
 storage = MemoryStorage()
 
 bot = Bot(token=os.getenv('BOT_TOKEN'))
