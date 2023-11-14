@@ -50,6 +50,40 @@ async def admin_logout(message: types.Message, state: FSMContext):
     )
 
 
+@dp.message_handler(commands=['send_logs_manually'], state=FSMAdmin.admin)
+async def send_logs_manually(message: types.Message):
+    await message.answer(
+        'Отправляю логги...',
+    )
+
+    with open('.\main_log.log', 'rb') as log_file:
+        await bot.send_document(
+            chat_id=message.chat.id,
+            document=log_file)
+
+
+async def send_logs_auto(exception: Exception):
+    """
+    Автоматически отправляет логги в лс всех админов, при каких-либо ошибках
+
+    :param exception: Ошибка, которая вынудила вызвать функцию.
+    :type exception: Exception
+    """
+    with open('.\main_log.log', 'rb') as log_file:
+        for admin_id in admins_ids:
+            await bot.send_message(
+                chat_id=admin_id,
+                text='Внимание! Случилась какая-то ошибка. Высылаю логги.\n\n'
+                     'Логги высланы по вине следующей ошибки:\n\n' + str(exception)
+            )
+
+            await bot.send_document(
+                chat_id=admin_id,
+                document=log_file
+            )
+
+
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_login, commands=['admin_login'])
     dp.register_message_handler(admin_logout, commands=['admin_logout'], state=FSMAdmin.admin)
+    dp.register_message_handler(send_logs_manually, commands=['send_logs_manually'], state=FSMAdmin.admin)
