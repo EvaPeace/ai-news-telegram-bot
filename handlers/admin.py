@@ -3,6 +3,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from config import dp, bot, admins_ids
+from handlers.channel import write_news
 from keyboards import kb_admin
 
 
@@ -48,6 +49,21 @@ async def admin_logout(message: types.Message, state: FSMContext):
     await message.answer(
         f'Выход из панели администратора успешен. Пока-пока, {full_name}',
     )
+
+
+@dp.message_handler(commands=['send_post_manually'], state=FSMAdmin.admin)
+async def send_post_manually(message: types.Message, n_news=3):
+    """
+    Вручную запускает `write_news` для написания поста.
+
+    :param n_news: Количество новостей для поста.
+    :type n_news: int
+    """
+    await message.answer('Отправляю пост вручную...')
+
+    await write_news()
+
+    await message.answer('Пост has been отправлен')
 
 
 @dp.message_handler(commands=['send_logs_manually'], state=FSMAdmin.admin)
