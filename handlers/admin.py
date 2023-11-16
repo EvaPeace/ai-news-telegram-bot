@@ -2,8 +2,9 @@ from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
-from config import dp, bot, admins_ids
-from handlers.channel import write_news
+from config import dp, bot, admins_ids, scheduler
+
+from handlers.channel import write_news, start_schedule
 from keyboards import kb_admin
 
 
@@ -98,6 +99,31 @@ async def send_logs_auto(exception: Exception):
                 document=log_file
             )
 
+@dp.message_handler(commands=['disable_schedule'], state=FSMAdmin.admin)
+async def disable_schedule(message: types.Message, state: FSMContext):
+    if scheduler.running:
+        await message.answer(
+            "Отключаю расписание...🚧 \n Пуск ручного режима... \n Ручной режим запущен."
+        )
+        scheduler.shutdown()
+    else:
+        await message.answer(
+            "Расписание уже в отключке. не жди врубай, время денга!"
+        )
+
+
+@dp.message_handler(commands=['enable_schedule'], state=FSMAdmin.admin)
+async def enable_schedule(message: types.Message, state: FSMContext):
+    if scheduler.running:
+        await message.answer(
+            "Расписание уже запущено, попей пока кифирчику."
+        )
+
+    else:
+        await message.answer(
+            "Подрубаю расписание...✅\n Отключение ручного режима...\n Ручной режим отключён."
+        )
+        await start_schedule()
 
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_login, commands=['admin_login'])

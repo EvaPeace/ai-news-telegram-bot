@@ -1,9 +1,9 @@
 from aiogram import types, Dispatcher, Bot
 from aiogram.dispatcher.filters.state import StatesGroup, State
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 from apscheduler.triggers.cron import CronTrigger
 
-from config import dp, bot, channel_id
+from config import dp, bot, channel_id, scheduler
 from functions import get_news_headlines, get_post_from_ChatGPT
 
 
@@ -27,7 +27,6 @@ def register_handlers_channel(dp: Dispatcher):
 
 
 def start_schedule():
-    scheduler = AsyncIOScheduler()
 
     trigger1 = CronTrigger(timezone='Europe/Moscow', hour=7, minute=00, second=0)
     scheduler.add_job(write_news, trigger=trigger1)

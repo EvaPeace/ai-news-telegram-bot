@@ -1,6 +1,8 @@
 import logging
 import os
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
 import openai
 
 from aiogram import Bot
@@ -13,6 +15,8 @@ openai.api_base = os.getenv('openai_api_base')
 channel_id = os.getenv('channel_id')
 
 admins_ids = (os.getenv('admin1_id'), os.getenv('admin2_id'))
+
+scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
 
 storage = MemoryStorage()
 
