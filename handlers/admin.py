@@ -151,3 +151,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_login, commands=['admin_login'])
     dp.register_message_handler(admin_logout, commands=['admin_logout'], state=FSMAdmin.admin)
     dp.register_message_handler(send_logs_manually, commands=['send_logs_manually'], state=FSMAdmin.admin)
+    dp.register_message_handler(disable_schedule, commands=['disable_schedule'], state=FSMAdmin.admin)
+    dp.register_message_handler(enable_schedule, commands=['enable_schedule'], state=FSMAdmin.admin)
