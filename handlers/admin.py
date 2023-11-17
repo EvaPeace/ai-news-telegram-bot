@@ -57,6 +57,8 @@ async def send_post_manually(message: types.Message, n_news=3):
     """
     Вручную запускает `write_news` для написания поста.
 
+    :param message: Сообщение, что выслал пользователь
+    :type message: aiogram.types.Message
     :param n_news: Количество новостей для поста.
     :type n_news: int
     """
@@ -69,6 +71,12 @@ async def send_post_manually(message: types.Message, n_news=3):
 
 @dp.message_handler(commands=['send_logs_manually'], state=FSMAdmin.admin)
 async def send_logs_manually(message: types.Message):
+    """
+    Вручную отправляет логги.
+
+    :param message: Сообщение, что выслал пользователь
+    :type message: aiogram.types.Message
+    """
     await message.answer(
         'Отправляю логги...',
     )
@@ -99,8 +107,15 @@ async def send_logs_auto(exception: Exception):
                 document=log_file
             )
 
+
 @dp.message_handler(commands=['disable_schedule'], state=FSMAdmin.admin)
-async def disable_schedule(message: types.Message, state: FSMContext):
+async def disable_schedule(message: types.Message):
+    """
+    Отключает вызов функции `write_news` по расписанию
+
+    :param message: Сообщение, что выслал пользователь
+    :type message: aiogram.types.Message
+    """
     if scheduler.running:
         await message.answer(
             "Отключаю расписание...🚧 \n Пуск ручного режима... \n Ручной режим запущен."
@@ -113,7 +128,13 @@ async def disable_schedule(message: types.Message, state: FSMContext):
 
 
 @dp.message_handler(commands=['enable_schedule'], state=FSMAdmin.admin)
-async def enable_schedule(message: types.Message, state: FSMContext):
+async def enable_schedule(message: types.Message):
+    """
+    Включает вызов функции `write_news` по расписанию
+
+    :param message: Сообщение, что выслал пользователь
+    :type message: aiogram.types.Message
+    """
     if scheduler.running:
         await message.answer(
             "Расписание уже запущено, попей пока кифирчику."
@@ -124,6 +145,7 @@ async def enable_schedule(message: types.Message, state: FSMContext):
             "Подрубаю расписание...✅\n Отключение ручного режима...\n Ручной режим отключён."
         )
         await start_schedule()
+
 
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_login, commands=['admin_login'])
