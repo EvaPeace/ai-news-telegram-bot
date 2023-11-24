@@ -87,27 +87,6 @@ async def send_logs_manually(message: types.Message):
             document=log_file)
 
 
-async def send_logs_auto(exception: Exception):
-    """
-    Автоматически отправляет логги в лс всех админов, при каких-либо ошибках
-
-    :param exception: Ошибка, которая вынудила вызвать функцию.
-    :type exception: Exception
-    """
-    with open('.\main_log.log', 'rb') as log_file:
-        for admin_id in admins_ids:
-            await bot.send_message(
-                chat_id=admin_id,
-                text='Внимание! Случилась какая-то ошибка. Высылаю логги.\n\n'
-                     'Логги высланы по вине следующей ошибки:\n\n' + str(exception)
-            )
-
-            await bot.send_document(
-                chat_id=admin_id,
-                document=log_file
-            )
-
-
 @dp.message_handler(commands=['disable_schedule'], state=FSMAdmin.admin)
 async def disable_schedule(message: types.Message):
     """

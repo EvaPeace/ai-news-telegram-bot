@@ -2,14 +2,7 @@ import logging
 
 import openai
 
-# настройка базового логгера
-logging.basicConfig(
-    level=logging.INFO,  # Уровень логирования (может быть DEBUG, INFO, WARNING, ERROR, CRITICAL)
-    format="%(name)s %(asctime)s %(levelname)s %(message)s",
-    filename='main_log.log',  # Имя файла, куда будут записываться логи
-    filemode='a+',  # Режим записи (a - добавление, w - перезапись)
-    encoding='utf-8'
-)
+from config import admins_ids, bot
 
 logger2 = logging.getLogger(__name__)
 
@@ -53,3 +46,24 @@ def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
     except openai.error.OpenAIError as e:
         # Handle timeout error, e.g. retry or log
         logger2.error(f"get_post_from_ChatGPT - OpenAI API: {e}")
+
+
+async def send_logs_auto(exception: Exception):
+    """
+    Автоматически отправляет логги в лс всех админов, при каких-либо ошибках
+
+    :param exception: Ошибка, которая вынудила вызвать функцию.
+    :type exception: Exception
+    """
+    with open('.\main_log.log', 'rb') as log_file:
+        for admin_id in admins_ids:
+            await bot.send_message(
+                chat_id=admin_id,
+                text='Внимание! Случилась какая-то ошибка. Высылаю логги.\n\n'
+                     'Логги высланы по вине следующей ошибки:\n\n' + str(exception)
+            )
+
+            await bot.send_document(
+                chat_id=admin_id,
+                document=log_file
+            )
