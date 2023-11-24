@@ -42,11 +42,16 @@ def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
 
     except TypeError as e:
         logger2.error(f"get_post_from_ChatGPT - Incorrect input data type in news_headlines: {e}")
+        send_logs_auto(e)
 
     except openai.error.OpenAIError as e:
         # Handle timeout error, e.g. retry or log
         logger2.error(f"get_post_from_ChatGPT - OpenAI API: {e}")
+        send_logs_auto(e)
 
+    except Exception as e:
+        logger2.error(f"get_post_from_ChatGPT: {e}")
+        send_logs_auto(e)
 
 async def send_logs_auto(exception: Exception):
     """
