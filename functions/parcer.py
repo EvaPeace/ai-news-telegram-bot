@@ -1,7 +1,7 @@
 import feedparser
 
 
-def get_news_headlines(n_news=3, url='https://motor.ru/exports/rss') -> list[str] | None:
+def get_news_headlines(n_news=3, url='https://news.rambler.ru/rss/politics/') -> list[str] | None:
     """
     Получает список заголовков новостей и возвращает его как список строк (str).
 
