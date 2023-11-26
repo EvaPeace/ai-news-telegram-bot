@@ -6,32 +6,58 @@ from apscheduler.triggers.cron import CronTrigger
 from config import dp, bot, channel_id, scheduler
 from functions import get_news_headlines, get_post_from_ChatGPT
 
+from functions.Text import send_logs_auto
+import logging
 
+# creating logger2 to use in sending logs
+logger2 = logging.getLogger(__name__)
+
+#setting the state admin
 class FSMClient(StatesGroup):
     solution = State()
 
-
+''' creating function that sending news headlines into ChatCPT, 
+which invents news and and then sending news into channel'''
 async def write_news():
-    news_headlines = get_news_headlines()
-    news_post = get_post_from_ChatGPT(news_headlines)
+    try:
+        news_headlines = get_news_headlines()
+        news_post = get_post_from_ChatGPT(news_headlines)
 
-    await bot.send_message(
-        chat_id=channel_id,
-        text='Новости за сегодня:\n\n' + news_post
-    )
-
+        await bot.send_message(
+            chat_id=channel_id,
+            text='Новости за сегодня:\n\n' + news_post
+        )
+    except TypeError as e:
+        logger2.error(f"write_news {e}")
+        send_logs_auto(e)
+    #Ошибка сети
+    except aiogram.utils.exceptions.NetworkError as e:
+        logger2.error(f"write_news {e}")
+        send_logs_auto(e)
+    #Ошибка, когда бот не может найти ID чата
+    except aiogram.utils.exceptions.ChatNotFound as e:
+        logger2.error(f"write_news {e}")
+        send_logs_auto(e)
+    #Все остальные ошибки
+    except Exception as e:
+        logger2.error(f"write_news {e}")
+        send_logs_auto(e)
 
 def register_handlers_channel(dp: Dispatcher):
     dp.register_message_handler(write_news)
     start_schedule()
 
+#function that starting sending posts into channel according to the schedule
 
 def start_schedule():
+    try:
+        trigger1 = CronTrigger(timezone='Europe/Moscow', hour=7, minute=00, second=0)
+        scheduler.add_job(write_news, trigger=trigger1)
 
-    trigger1 = CronTrigger(timezone='Europe/Moscow', hour=7, minute=00, second=0)
-    scheduler.add_job(write_news, trigger=trigger1)
+        trigger2 = CronTrigger(timezone='Europe/Moscow', hour=18, minute=00, second=0)
+        scheduler.add_job(write_news, trigger=trigger2)
 
-    trigger2 = CronTrigger(timezone='Europe/Moscow', hour=18, minute=00, second=0)
-    scheduler.add_job(write_news, trigger=trigger2)
-
-    scheduler.start()
+        scheduler.start()
+    except Exception as e:
+        logger2.error(f"start_sch {e}")
+        send_logs_auto(e)

@@ -9,12 +9,14 @@ from keyboards import kb_admin
 
 from functions.Text import send_logs_auto
 import logging
-
+# creating logger2 to use in sending logs
 logger2 = logging.getLogger(__name__)
 
+#setting the state admin
 class FSMAdmin(StatesGroup):
     admin = State()
 
+# creating a function that enable admin state
 
 @dp.message_handler(commands=['admin_login'])
 async def admin_login(message: types.Message, state: FSMContext):
@@ -51,6 +53,7 @@ async def admin_login(message: types.Message, state: FSMContext):
         logger2.error(f"admin_login {e}")
         send_logs_auto(e)
 
+# creating a function that disable admin state
 
 @dp.message_handler(commands=['admin_logout'], state=FSMAdmin.admin)
 async def admin_logout(message: types.Message, state: FSMContext):
@@ -65,6 +68,7 @@ async def admin_logout(message: types.Message, state: FSMContext):
         f'Выход из панели администратора успешен. Пока-пока, {full_name}',
     )
 
+# creating a function that send post manually, without bot
 
 @dp.message_handler(commands=['send_post_manually'], state=FSMAdmin.admin)
 async def send_post_manually(message: types.Message, n_news=3):
@@ -94,9 +98,12 @@ async def send_post_manually(message: types.Message, n_news=3):
     except NameError as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
+    #Все остальные ошибки
     except Exception as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
+
+# creating a function that send logs manually
 
 @dp.message_handler(commands=['send_logs_manually'], state=FSMAdmin.admin)
 async def send_logs_manually(message: types.Message):
@@ -122,6 +129,8 @@ async def send_logs_manually(message: types.Message):
     except Exception as e: 
         logger2.error(f"send_logs_manually {e}") 
         send_logs_auto(e)
+
+# creating a function that disables the schedule
 
 @dp.message_handler(commands=['disable_schedule'], state=FSMAdmin.admin)
 async def disable_schedule(message: types.Message):
@@ -150,6 +159,8 @@ async def disable_schedule(message: types.Message):
     except Exception as e:
         logger2.error(f"dis_sch {e}")
         send_logs_auto(e)
+
+# creating a function that enables the schedule
 
 @dp.message_handler(commands=['enable_schedule'], state=FSMAdmin.admin)
 async def enable_schedule(message: types.Message):
