@@ -26,7 +26,7 @@ which invents news and and then sending news into channel'''
 async def write_news():
     try:
         news_headlines = get_news_headlines()
-        news_post = get_post_from_ChatGPT(news_headlines)
+        news_post = await get_post_from_ChatGPT(news_headlines)
 
         await bot.send_message(
             chat_id=channel_id,
