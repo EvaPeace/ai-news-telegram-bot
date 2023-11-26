@@ -34,19 +34,19 @@ async def write_news():
         )
     except TypeError as e:
         logger2.error(f"write_news {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Ошибка сети
     except AiogramExceptions.NetworkError as e:
         logger2.error(f"write_news {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Ошибка, когда бот не может найти ID чата
     except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"write_news {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Все остальные ошибки
     except Exception as e:
         logger2.error(f"write_news {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 def register_handlers_channel(dp: Dispatcher):

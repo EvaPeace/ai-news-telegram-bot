@@ -49,13 +49,13 @@ async def admin_login(message: types.Message, state: FSMContext):
             )
     except AiogramExceptions.NetworkError as e:
         logger2.error(f"admin_login {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"admin_login {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except Exception as e:
         logger2.error(f"admin_login {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 # creating a function that disable admin state
@@ -95,19 +95,19 @@ async def send_post_manually(message: types.Message, n_news=3):
     # Ошибка, когда бот не может найти ID чата
     except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"send_post_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Ошибка сети
     except AiogramExceptions.NetworkError as e:
         logger2.error(f"send_post_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Ошибка неопределённости какой то переменной или не выполнения функции
     except NameError as e:
         logger2.error(f"send_post_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     # Все остальные ошибки
     except Exception as e:
         logger2.error(f"send_post_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 # creating a function that send logs manually
@@ -132,10 +132,10 @@ async def send_logs_manually(message: types.Message):
     # Ошибка в чтении или записи файла
     except IOError as e:
         logger2.error(f"send_logs_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except Exception as e:
         logger2.error(f"send_logs_manually {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 # creating a function that disables the schedule
@@ -160,13 +160,13 @@ async def disable_schedule(message: types.Message):
             )
     except AiogramExceptions.NetworkError as e:
         logger2.error(f"dis_sch{e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"dis_sch {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except Exception as e:
         logger2.error(f"dis_sch {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 # creating a function that enables the schedule
@@ -192,13 +192,13 @@ async def enable_schedule(message: types.Message):
             await start_schedule()
     except AiogramExceptions.NetworkError as e:
         logger2.error(f"en_sch{e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"en_sch {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
     except Exception as e:
         logger2.error(f"en_sch {e}")
-        send_logs_auto(e)
+        await send_logs_auto(e)
 
 
 def register_handlers_admin(dp: Dispatcher):
