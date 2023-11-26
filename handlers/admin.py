@@ -1,6 +1,7 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.utils import exceptions as AiogramExceptions
 
 from config import dp, bot, admins_ids, scheduler
 
@@ -9,12 +10,15 @@ from keyboards import kb_admin
 
 from functions.Text import send_logs_auto
 import logging
+
 # creating logger2 to use in sending logs
 logger2 = logging.getLogger(__name__)
 
-#setting the state admin
+
+# setting the state admin
 class FSMAdmin(StatesGroup):
     admin = State()
+
 
 # creating a function that enable admin state
 
@@ -43,15 +47,16 @@ async def admin_login(message: types.Message, state: FSMContext):
             await message.answer(
                 f'Извините, но вы, {full_name}, не админ. Я вызываю полицию',
             )
-    except aiogram.utils.exceptions.NetworkError as e:
+    except AiogramExceptions.NetworkError as e:
         logger2.error(f"admin_login {e}")
         send_logs_auto(e)
-    except aiogram.utils.exceptions.ChatNotFound as e:
+    except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"admin_login {e}")
         send_logs_auto(e)
     except Exception as e:
         logger2.error(f"admin_login {e}")
         send_logs_auto(e)
+
 
 # creating a function that disable admin state
 
@@ -67,6 +72,7 @@ async def admin_logout(message: types.Message, state: FSMContext):
     await message.answer(
         f'Выход из панели администратора успешен. Пока-пока, {full_name}',
     )
+
 
 # creating a function that send post manually, without bot
 
@@ -86,22 +92,23 @@ async def send_post_manually(message: types.Message, n_news=3):
         await write_news()
 
         await message.answer('Пост has been отправлен')
-    #Ошибка, когда бот не может найти ID чата
-    except aiogram.utils.exceptions.ChatNotFound as e:
+    # Ошибка, когда бот не может найти ID чата
+    except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
-    #Ошибка сети
-    except aiogram.utils.exceptions.NetworkError as e:
+    # Ошибка сети
+    except AiogramExceptions.NetworkError as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
-    #Ошибка неопределённости какой то переменной или не выполнения функции
+    # Ошибка неопределённости какой то переменной или не выполнения функции
     except NameError as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
-    #Все остальные ошибки
+    # Все остальные ошибки
     except Exception as e:
         logger2.error(f"send_post_manually {e}")
         send_logs_auto(e)
+
 
 # creating a function that send logs manually
 
@@ -122,13 +129,14 @@ async def send_logs_manually(message: types.Message):
             await bot.send_document(
                 chat_id=message.chat.id,
                 document=log_file)
-    #Ошибка в чтении или записи файла
+    # Ошибка в чтении или записи файла
     except IOError as e:
         logger2.error(f"send_logs_manually {e}")
         send_logs_auto(e)
-    except Exception as e: 
-        logger2.error(f"send_logs_manually {e}") 
+    except Exception as e:
+        logger2.error(f"send_logs_manually {e}")
         send_logs_auto(e)
+
 
 # creating a function that disables the schedule
 
@@ -150,15 +158,16 @@ async def disable_schedule(message: types.Message):
             await message.answer(
                 "Расписание уже в отключке. не жди врубай, время денга!"
             )
-    except aiogram.utils.exceptions.NetworkError as e:
+    except AiogramExceptions.NetworkError as e:
         logger2.error(f"dis_sch{e}")
         send_logs_auto(e)
-    except aiogram.utils.exceptions.ChatNotFound as e:
+    except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"dis_sch {e}")
         send_logs_auto(e)
     except Exception as e:
         logger2.error(f"dis_sch {e}")
         send_logs_auto(e)
+
 
 # creating a function that enables the schedule
 
@@ -181,15 +190,16 @@ async def enable_schedule(message: types.Message):
                 "Подрубаю расписание...✅\n Отключение ручного режима...\n Ручной режим отключён."
             )
             await start_schedule()
-    except aiogram.utils.exceptions.NetworkError as e:
+    except AiogramExceptions.NetworkError as e:
         logger2.error(f"en_sch{e}")
         send_logs_auto(e)
-    except aiogram.utils.exceptions.ChatNotFound as e:
+    except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"en_sch {e}")
         send_logs_auto(e)
     except Exception as e:
         logger2.error(f"en_sch {e}")
         send_logs_auto(e)
+
 
 def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(admin_login, commands=['admin_login'])

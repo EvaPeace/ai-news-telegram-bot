@@ -1,5 +1,6 @@
 from aiogram import types, Dispatcher, Bot
 from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.utils import exceptions as AiogramExceptions
 
 from apscheduler.triggers.cron import CronTrigger
 
@@ -12,12 +13,16 @@ import logging
 # creating logger2 to use in sending logs
 logger2 = logging.getLogger(__name__)
 
-#setting the state admin
+
+# setting the state admin
 class FSMClient(StatesGroup):
     solution = State()
 
+
 ''' creating function that sending news headlines into ChatCPT, 
 which invents news and and then sending news into channel'''
+
+
 async def write_news():
     try:
         news_headlines = get_news_headlines()
@@ -30,24 +35,26 @@ async def write_news():
     except TypeError as e:
         logger2.error(f"write_news {e}")
         send_logs_auto(e)
-    #Ошибка сети
-    except aiogram.utils.exceptions.NetworkError as e:
+    # Ошибка сети
+    except AiogramExceptions.NetworkError as e:
         logger2.error(f"write_news {e}")
         send_logs_auto(e)
-    #Ошибка, когда бот не может найти ID чата
-    except aiogram.utils.exceptions.ChatNotFound as e:
+    # Ошибка, когда бот не может найти ID чата
+    except AiogramExceptions.ChatNotFound as e:
         logger2.error(f"write_news {e}")
         send_logs_auto(e)
-    #Все остальные ошибки
+    # Все остальные ошибки
     except Exception as e:
         logger2.error(f"write_news {e}")
         send_logs_auto(e)
+
 
 def register_handlers_channel(dp: Dispatcher):
     dp.register_message_handler(write_news)
     start_schedule()
 
-#function that starting sending posts into channel according to the schedule
+
+# function that starting sending posts into channel according to the schedule
 
 def start_schedule():
     try:
