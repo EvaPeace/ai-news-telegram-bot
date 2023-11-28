@@ -55,7 +55,8 @@ async def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
 
 async def send_logs_auto(exception: Exception):
     """
-    Автоматически отправляет логги в лс всех админов, при каких-либо ошибках
+    Автоматически отправляет логги в лс всех админов, при каких-либо ошибках.
+    Логги админов храняться в перменой admins_ids в config.py и берутся из переменных окружения.
 
     :param exception: Ошибка, которая вынудила вызвать функцию.
     :type exception: Exception
