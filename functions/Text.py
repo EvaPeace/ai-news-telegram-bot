@@ -53,6 +53,7 @@ async def get_post_from_ChatGPT(news_headlines: list[str]) -> str | None:
         logger2.error(f"get_post_from_ChatGPT: {e}")
         await send_logs_auto(e)
 
+
 async def send_logs_auto(exception: Exception):
     """
     Автоматически отправляет логги в лс всех админов, при каких-либо ошибках.
@@ -61,15 +62,25 @@ async def send_logs_auto(exception: Exception):
     :param exception: Ошибка, которая вынудила вызвать функцию.
     :type exception: Exception
     """
-    with open('.\main_log.log', 'rb') as log_file:
-        for admin_id in admins_ids:
-            await bot.send_message(
-                chat_id=admin_id,
-                text='Внимание! Случилась какая-то ошибка. Высылаю логги.\n\n'
-                     'Логги высланы по вине следующей ошибки:\n\n' + str(exception)
-            )
+    try:
+        with open('.\main_log.log', 'rb') as log_file:
+            for admin_id in admins_ids:
+                await bot.send_message(
+                    chat_id=admin_id,
+                    text='Внимание! Случилась какая-то ошибка. Высылаю логги.\n\n'
+                         'Логги высланы по вине следующей ошибки:\n\n' + str(exception)
+                )
 
-            await bot.send_document(
-                chat_id=admin_id,
-                document=log_file
-            )
+                await bot.send_document(
+                    chat_id=admin_id,
+                    document=log_file
+                )
+
+    except FileNotFoundError as e:
+        logger2.error(f"send_logs_auto: logs file is not found {e}")
+
+        # creating of logs file
+        with open('main_log.log', "w"):
+            pass
+
+        logger2.info(f"send_logs_auto: logs file created with the name 'main_log.log', because the upper Error {e}")
