@@ -31,26 +31,11 @@ async def write_news():
             chat_id=channel_id,
             text='Новости за сегодня:\n\n' + news_post
         )
-    except TypeError as e:
-        logger2.error(f"write_news {e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.NetworkError as e:
-        logger2.error(f"write_news {e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.ChatNotFound as e:
-        logger2.error(f"write_news {e}")
-        await send_logs_auto(e)
+
     except Exception as e:
-        logger2.error(f"write_news {e}")
+        logger2.error(f"write_news: {e}")
         await send_logs_auto(e)
 
-
-def register_handlers_channel(dp: Dispatcher):
-    dp.register_message_handler(write_news)
-    start_schedule()
-
-
-# function that starting sending posts into channel according to the schedule
 
 def start_schedule():
     """
@@ -68,6 +53,13 @@ def start_schedule():
         scheduler.add_job(write_news, trigger=trigger2)
 
         scheduler.start()
+
     except Exception as e:
-        logger2.error(f"start_sch {e}")
+        logger2.error(f"start_schedule: {e}")
         send_logs_auto(e)
+
+
+def register_handlers_channel(dp: Dispatcher):
+    dp.register_message_handler(write_news)
+    dp.register_message_handler(start_schedule)
+    start_schedule()

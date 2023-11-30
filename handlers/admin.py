@@ -43,14 +43,9 @@ async def admin_login(message: types.Message, state: FSMContext):
             await message.answer(
                 f'Извините, но вы, {full_name}, не админ. Я вызываю полицию',
             )
-    except AiogramExceptions.NetworkError as e:
-        logger2.error(f"admin_login {e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.ChatNotFound as e:
-        logger2.error(f"admin_login {e}")
-        await send_logs_auto(e)
+
     except Exception as e:
-        logger2.error(f"admin_login {e}")
+        logger2.error(f"admin_login: {e}")
         await send_logs_auto(e)
 
 
@@ -59,13 +54,18 @@ async def admin_logout(message: types.Message, state: FSMContext):
     """
     Выход из админки
     """
-    await state.finish()
+    try:
+        await state.finish()
 
-    full_name = message.from_user.full_name
+        full_name = message.from_user.full_name
 
-    await message.answer(
-        f'Выход из панели администратора успешен. Пока-пока, {full_name}',
-    )
+        await message.answer(
+            f'Выход из панели администратора успешен. Пока-пока, {full_name}',
+        )
+
+    except Exception as e:
+        logger2.error(f"admin_logout: {e}")
+        await send_logs_auto(e)
 
 
 @dp.message_handler(commands=['send_post_manually'], state=FSMAdmin.admin)
@@ -84,17 +84,9 @@ async def send_post_manually(message: types.Message, n_news=3):
         await write_news()
 
         await message.answer('Пост has been отправлен')
-    except AiogramExceptions.ChatNotFound as e:
-        logger2.error(f"send_post_manually {e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.NetworkError as e:
-        logger2.error(f"send_post_manually {e}")
-        await send_logs_auto(e)
-    except NameError as e:
-        logger2.error(f"send_post_manually {e}")
-        await send_logs_auto(e)
+
     except Exception as e:
-        logger2.error(f"send_post_manually {e}")
+        logger2.error(f"send_post_manually: {e}")
         await send_logs_auto(e)
 
 
@@ -111,15 +103,22 @@ async def send_logs_manually(message: types.Message):
             'Отправляю логги...',
         )
 
-        with open('.\main_log.log', 'rb') as log_file:
+        with open('main_log.log', 'rb') as log_file:
             await bot.send_document(
                 chat_id=message.chat.id,
                 document=log_file)
-    except IOError as e:
-        logger2.error(f"send_logs_manually {e}")
-        await send_logs_auto(e)
+
+    except FileNotFoundError as e:
+        logger2.error(f"send_logs_manually: logs file is not found {e}")
+
+        # creating of logs file
+        with open('main_log.log', "w"):
+            pass
+
+        logger2.info(f"send_logs_manually: logs file created with the name 'main_log.log', because the upper Error {e}")
+
     except Exception as e:
-        logger2.error(f"send_logs_manually {e}")
+        logger2.error(f"send_logs_manually: {e}")
         await send_logs_auto(e)
 
 
@@ -137,18 +136,14 @@ async def disable_schedule(message: types.Message):
                 "Отключаю расписание...🚧 \n Пуск ручного режима... \n Ручной режим запущен."
             )
             scheduler.shutdown()
+
         else:
             await message.answer(
                 "Расписание уже в отключке. не жди врубай, время денга!"
             )
-    except AiogramExceptions.NetworkError as e:
-        logger2.error(f"dis_sch{e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.ChatNotFound as e:
-        logger2.error(f"dis_sch {e}")
-        await send_logs_auto(e)
+
     except Exception as e:
-        logger2.error(f"dis_sch {e}")
+        logger2.error(f"disable_schedule: {e}")
         await send_logs_auto(e)
 
 
@@ -170,15 +165,11 @@ async def enable_schedule(message: types.Message):
             await message.answer(
                 "Подрубаю расписание...✅\n Отключение ручного режима...\n Ручной режим отключён."
             )
+
             await start_schedule()
-    except AiogramExceptions.NetworkError as e:
-        logger2.error(f"en_sch{e}")
-        await send_logs_auto(e)
-    except AiogramExceptions.ChatNotFound as e:
-        logger2.error(f"en_sch {e}")
-        await send_logs_auto(e)
+
     except Exception as e:
-        logger2.error(f"en_sch {e}")
+        logger2.error(f"enable_schedule: {e}")
         await send_logs_auto(e)
 
 
