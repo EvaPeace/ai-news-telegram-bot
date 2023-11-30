@@ -24,7 +24,7 @@ async def write_news():
     :return: None
     """
     try:
-        news_headlines = get_news_headlines()  # getting news headlines from the rss
+        news_headlines = await get_news_headlines()  # getting news headlines from the rss
         news_post = await get_post_from_ChatGPT(news_headlines)  # sending headlines to ChatGPT and getting the news
 
         await bot.send_message(
