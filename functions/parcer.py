@@ -7,16 +7,27 @@ from functions import send_logs_auto
 logger2 = logging.getLogger(__name__)
 
 
-async def get_news_headlines(n_news=3, url='https://news.rambler.ru/rss/politics/') -> list[str] | None:
+async def get_news_headlines(n_news=3, url='https://news.rambler.ru/rss/politics/') -> list[dict[str]] | None:
     """
-    Получает список заголовков новостей и возвращает его как список строк (str).
+    Собирает новости и возвращает их в виде списка словарей.
 
-    :param url:
-    :type url: str
+    Пример вывода:
+
+    ```
+    output_list = [
+    {"title": "Заголовок новости", "description": "Описание новости"},
+    {"title": "Заголовок новости", "description": "Описание новости"},
+    {"title": "Заголовок новости", "description": "Описание новости"},
+    ]
+    ```
+
+
     :param n_news: Количество новостей для получения.
     :type n_news: int
-    :return: Список заголовков новостей в виде списка строк (str) или None в случае ошибки
-    :rtype: list[str] | None
+    :param url: Ссылка на rss-ленту
+    :type url: str
+    :return: Список словарей новостей `{"title": "Заголовок новости", "description": "Описание новости"}` или None в случае ошибки
+    :rtype: list[dict[str]] | None
     """
     try:
         # Создаем объект feedparser для работы с RSS лентой
@@ -28,14 +39,15 @@ async def get_news_headlines(n_news=3, url='https://news.rambler.ru/rss/politics
             return
 
         # Если загрузка RSS ленты прошла успешно, выводим заголовок
-        titles_list = []
+        news_list = []
 
-        for item in feed.entries:
-            titles_list.append(item.title)
+        for item in feed.entries[0:n_news]:
+            news_list.append({
+                "title": item.title,
+                "description": item.description,
+            })
 
-        three_first_news = titles_list[0:n_news]
-
-        return three_first_news
+        return news_list
 
     except Exception as e:
         logger2.error(f'get_news_headlines: {e}')
