@@ -25,13 +25,16 @@ async def write_news():
     """
     try:
         news_list = await get_news_headlines()  # getting news headlines from the rss
-        news_post = await get_post_from_ChatGPT(news_list)  # sending headlines to ChatGPT and getting the news
 
-        await bot.send_message(
-            chat_id=channel_id,
-            text='Новости за сегодня:\n\n' + news_post,
-            parse_mode="MarkdownV2"
-        )
+        for news in news_list:
+            news_post = await get_post_from_ChatGPT(news)  # sending headlines to ChatGPT and getting the news
+
+            await bot.send_photo(
+                chat_id=channel_id,
+                photo=news["img_url"],
+                caption=news_post,
+                parse_mode="MarkdownV2"
+            )
 
     except Exception as e:
         logger2.error(f"write_news: {e}")

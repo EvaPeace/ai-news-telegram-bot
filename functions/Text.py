@@ -7,13 +7,13 @@ from config import admins_ids, bot
 logger2 = logging.getLogger(__name__)
 
 
-async def get_post_from_ChatGPT(news_list: list[dict[str]]) -> str | None:
+async def get_post_from_ChatGPT(news_dict: dict[str]) -> str | None:
     """
     Генерирует новостной пост на основе заданных заголовков новостей, обращаясь к ChatGPT через OpenAI API.
     В случае ошибки возвращает None
 
-    :param news_list: Список словарей новостей `{"title": "Заголовок новости", "description": "Описание новости"}`.
-    :type news_list: list[dict[str]])
+    :param news_dict: Словарь новости `{"title": "Заголовок новости", "description": "Описание новости"}`.
+    :type news_dict: dict[str]
     :return: Новостной пост сгенерированный ChatGPT (str) или None в случе ошибки
     :rtype: str | None
     """
@@ -48,11 +48,10 @@ async def get_post_from_ChatGPT(news_list: list[dict[str]]) -> str | None:
             18 декабря 2023 года министр обороны США Ллойд Остин объявил о начале военной операции против йеменских хуситов под названием «Страж процветания». К операции присоединились: Великобритания, Франция, Канада, Италия, Нидерланды, Норвегия, Испания, Бахрейн, Австралия, Греция и Сейшельские Острова.
             """
 
-        user_message = 'Привет, напиши провокационные, но короткие новостные статьи, примерно 100 слов, ' \
-                       'по следующими заголовкам и описаниям новостей:\n'
+        user_message = 'Привет, напиши провокационную, но короткую новостную статью, примерно 100 слов, использую ' \
+                       '*bold* для заголовков. Статью следует писать по следующим заголовку и описанию новости:\n '
 
-        for news in news_list:
-            user_message += f"\n\n*{news['title']}*\n{news['description']}"
+        user_message += f"\n\n*{news_dict['title']}*\n{news_dict['description']}"
 
         messages = [
             {"role": "system", "content": system_context},
@@ -61,10 +60,13 @@ async def get_post_from_ChatGPT(news_list: list[dict[str]]) -> str | None:
 
         chat_completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages, temperature=0.7)
 
-        chatgpt_answer = chat_completion["choices"][0]["message"]["content"].replace(".", "\.")
+        chatgpt_answer = chat_completion["choices"][0]["message"]["content"]
+
+        for c in ('_', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'):
+            chatgpt_answer = chatgpt_answer.replace(c, "\\" + c)
 
         log_dict = {
-            "input_data": news_list,
+            "input_data": news_dict,
             "user_message": user_message,
             "chatgpt_answer": chat_completion,
             "output_data": chatgpt_answer,
@@ -75,7 +77,7 @@ async def get_post_from_ChatGPT(news_list: list[dict[str]]) -> str | None:
         return chatgpt_answer
 
     except TypeError as e:
-        logger2.error(f"get_post_from_ChatGPT - Incorrect input data type in news_list: {e}")
+        logger2.error(f"get_post_from_ChatGPT - Incorrect input data type in news_dict: {e}")
         await send_logs_auto(e)
 
     except openai.error.OpenAIError as e:
