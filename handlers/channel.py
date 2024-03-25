@@ -28,6 +28,11 @@ async def write_news():
 
         for news in news_list:
             news_post = await get_post_from_ChatGPT(news)  # sending headlines to ChatGPT and getting the news
+            news_post += '\n\n*Новость вымышленная. Мы не несем ответственности за текст выше.' \
+                         'Этот текст написан нейросетью ChatGPT. Все вопросы к Open AI*'
+
+            for c in ('_', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'):
+                news_post = news_post.replace(c, "\\" + c)
 
             await bot.send_photo(
                 chat_id=channel_id,

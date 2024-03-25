@@ -62,9 +62,6 @@ async def get_post_from_ChatGPT(news_dict: dict[str]) -> str | None:
 
         chatgpt_answer = chat_completion["choices"][0]["message"]["content"]
 
-        for c in ('_', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'):
-            chatgpt_answer = chatgpt_answer.replace(c, "\\" + c)
-
         log_dict = {
             "input_data": news_dict,
             "user_message": user_message,
